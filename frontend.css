@@ -1,0 +1,89 @@
+// WEEK 1: FRONTEND SETUP - REACT AUTHENTICATION + DASHBOARD LAYOUT
+
+// 1. Terminal Commands:
+// npx create-react-app frontend
+// cd frontend
+// npm install axios react-router-dom tailwindcss @reduxjs/toolkit react-redux
+// npx tailwindcss init -p
+
+// tailwind.config.js (add content paths)
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  theme: { extend: {} },
+  plugins: [],
+};
+
+// src/index.css (include Tailwind)
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+// 2. src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+
+// 3. src/pages/Login.js
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    localStorage.setItem('token', res.data.token);
+    window.location.href = '/dashboard';
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form className="p-6 bg-white rounded shadow" onSubmit={handleSubmit}>
+        <h2 className="mb-4 text-xl font-bold">Login</h2>
+        <input type="email" placeholder="Email" className="w-full mb-2 p-2 border" value={email} onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" className="w-full mb-2 p-2 border" value={password} onChange={e => setPassword(e.target.value)} />
+        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">Login</button>
+      </form>
+    </div>
+  );
+};
+
+export default Login;
+
+
+// 4. src/pages/Register.js
+// (similar to Login.js but with additional 'role' field and POST to /register)
+
+// 5. src/pages/Dashboard.js
+import React from 'react';
+
+const Dashboard = () => {
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      {/* Placeholder for Upload & Chart Panels */}
+    </div>
+  );
+};
+
+export default Dashboard;
